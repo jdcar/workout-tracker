@@ -49,23 +49,50 @@ app.get("/api/workouts", (req, res) =>{
 // GET /api/workouts 404 1.959 ms - 151
 // GET /api/workouts 404 1.072 ms - 151
 
+
 // Click "Dashboard"
+app.get("/api/workouts/range", (req, res) =>{
+    db.exercises.find({}, (err, result) => {
+        if (err) throw err
+        res.json(result)
+    })
+})
+
 // GET /stats 304 1.543 ms - -
-// GET /api/workouts/range 404 1.194 ms - 157
+// app.get("/stats", (req, res) =>{
+//     db.exercises.find({}, (err, result) => {
+//         if (err) throw err
+//         res.json(result)
+//     })
+// })
 
 // Click "Add Exercise"
 // PUT /api/workouts/undefined
+app.put("/api/workouts/:id", (req, res) => {
+    const id = req.params.id
+    console.log(id)
+    db.exercises.find({ _id: mongojs.ObjectId(id)}, (err, result) => {
+        if (err) throw err 
+        res.json(result)
+    } )
+})
+
 
 // Click "Continue workout":
+// GET /exercise?
+// app.get("/exercise?")
+
 // POST /api/workouts 404 0.633 ms - 152
-app.post("/api/workouts", (req, res) =>{
-    // Right now this adds a blank exercise
-    console.log(req.body)
-    db.exercises.insert(req.body, (err, result) => {
-        if (err) throw err
-        console.log(result)
-    })
-})
+// app.post("/api/workouts", (req, res) =>{
+//     // Right now this adds a blank exercise
+//     db.exercises.insert(req.body, (err, result) => {
+//         if (err) throw err
+//         console.log(result)
+//     })
+// })
+
+// Click NewWorkout
+// GET /exercise
 
 // db.places.find({_id:[OBJECTID]})
 

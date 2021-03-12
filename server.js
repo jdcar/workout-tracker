@@ -58,13 +58,6 @@ app.get("/api/workouts/range", (req, res) =>{
     })
 })
 
-// GET /stats 304 1.543 ms - -
-// app.get("/stats", (req, res) =>{
-//     db.exercises.find({}, (err, result) => {
-//         if (err) throw err
-//         res.json(result)
-//     })
-// })
 
 // Click "Add Exercise"
 // PUT /api/workouts/undefined
@@ -83,13 +76,13 @@ app.put("/api/workouts/:id", (req, res) => {
 // app.get("/exercise?")
 
 // POST /api/workouts 404 0.633 ms - 152
-// app.post("/api/workouts", (req, res) =>{
-//     // Right now this adds a blank exercise
-//     db.exercises.insert(req.body, (err, result) => {
-//         if (err) throw err
-//         console.log(result)
-//     })
-// })
+app.post("/exercise", (req, res) =>{
+    // Right now this adds a blank exercise
+    db.exercises.insert(req.body, (err, result) => {
+        if (err) throw err
+        console.log(result)
+    })
+})
 
 // Click NewWorkout
 // GET /exercise

@@ -98,7 +98,7 @@ let workoutSeed = [
     ]
   },
   {
-    day: new Date(new Date().setDate(new Date().getDate() - 3)),
+    day: new Date(new Date().setDate(new Date().getDate() - 2)),
     exercises: [
       {
         type: "resistance",

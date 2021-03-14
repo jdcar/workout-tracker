@@ -1,6 +1,8 @@
 const express = require("express");
 const mongojs = require("mongojs")
 const logger = require("morgan");
+let mongoose = require("mongoose");
+
 
 const path = require("path");
 const PORT = process.env.PORT || 3000;
@@ -19,7 +21,7 @@ const collections = ["exercises"]
 const db = mongojs(databaseUrl, collections);
 
 mongoose.connect(
-    process.env.MONGODB_URI || `mongodb://localhost:${PORT}`,
+    process.env.MONGODB_URI || `mongodb://localhost/workouts`,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,

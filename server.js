@@ -53,8 +53,6 @@ app.get("/api/workouts/range", (req, res) => {
     })
 })
 
-
-
 app.get("/api/workouts/:id", (req, res) => {
     db.exercises.findOne(
         {
@@ -70,40 +68,19 @@ app.get("/api/workouts/:id", (req, res) => {
     );
 });
 // Click "Add Exercise"
-// PUT /api/workouts/undefined
-// app.put("/api/workouts/:id", (req, res) => {
-//     const id = req.params.id
-//     console.log(id)
-//     // db.exercises.find({ _id: mongojs.ObjectId(id)}, (err, result) => {
-//     //     if (err) throw err 
-//     //     res.json(result)
-//     // })
-// })
 
 // POST /api/workouts 404 0.633 ms - 152T
 // This creates a workout ID 
-app.post("/api/workouts/", (req, res) => {
-    // Right now this adds a blank exercise
-    // console.log(req.body)
-    db.exercises.insert(req.body, (err, result) => {
-        if (err) throw err
-        console.log(result)
-    })
-})
-
-
-app.put("/api/workouts/:id", (req, res) => {
-    console.log(req.params.id)
-    db.exercises.updateOne(
+app.post("/api/workouts", (req, res) => {
+    db.exercises.insertOne(
         {
-            _id: mongojs.ObjectId(req.params.id)
+            _id: mongojs.ObjectId(req.params.id),
+            
         },
         {
-            $push: {
-                // day: Date.now,
-                exercises: 
-                // [
-                    {
+            $set: {
+                day: Date.now,
+                exercises: {
                     type: req.body.type,
                     name: req.body.name,
                     duration: req.body.duration,
@@ -112,7 +89,40 @@ app.put("/api/workouts/:id", (req, res) => {
                     reps: req.body.reps,
                     sets: req.body.sets,
                 }
-            // ]
+            }
+        },
+        (error, data) => {
+            if (error) {
+                res.send(error);
+            } else {
+                res.send(data);
+            }
+        }
+    );
+})
+
+
+app.put("/api/workouts/:id", (req, res) => {
+    // console.log(req.params.id)
+    db.exercises.updateOne(
+        {
+            _id: mongojs.ObjectId(req.params.id)
+        },
+        {
+            $push: {
+                // day: Date.now,
+                exercises:
+                // [
+                {
+                    type: req.body.type,
+                    name: req.body.name,
+                    duration: req.body.duration,
+                    distance: req.body.distance,
+                    weight: req.body.weight,
+                    reps: req.body.reps,
+                    sets: req.body.sets,
+                }
+                // ]
             }
         },
         (error, data) => {
@@ -123,12 +133,7 @@ app.put("/api/workouts/:id", (req, res) => {
             }
         })
 
-
 })
-
-
-// Click NewWorkout
-// GET /exercise
 
 // Express - listening on localhost
 app.listen(PORT, () => {

@@ -50,15 +50,16 @@ app.get("/stats", (req, res) => {
 
 // API routes
 
-app.get("/api/workouts", (req, res) => {
+
+// Click "Dashboard"
+app.get("/api/workouts/range", (req, res) => {
     db.exercises.find({}, (err, result) => {
         if (err) throw err
         res.json(result)
     })
 })
 
-// Click "Dashboard"
-app.get("/api/workouts/range", (req, res) => {
+app.get("/exercise", (req, res) => {
     db.exercises.find({}, (err, result) => {
         if (err) throw err
         res.json(result)

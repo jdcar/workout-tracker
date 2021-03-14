@@ -18,6 +18,16 @@ const collections = ["exercises"]
 
 const db = mongojs(databaseUrl, collections);
 
+mongoose.connect(
+    process.env.MONGODB_URI || `mongodb://localhost:${PORT}`,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false
+    }
+  );
+
 db.on("error", error => {
     console.log("database error: ", error)
 })

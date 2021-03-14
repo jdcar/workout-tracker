@@ -1,13 +1,12 @@
 const express = require("express");
 const mongojs = require("mongojs")
 const logger = require("morgan");
-let mongoose = require("mongoose");
-
 
 const path = require("path");
 const PORT = process.env.PORT || 3000;
 const app = express();
 const Exercise = require("./models/WorkoutModel");
+let mongoose = require("mongoose");
 
 app.use(logger("dev"));
 
@@ -20,8 +19,12 @@ const collections = ["exercises"]
 
 const db = mongojs(databaseUrl, collections);
 
+db.on("error", error => {
+    console.log("database error: ", error)
+})
+
 mongoose.connect(
-    process.env.MONGODB_URI || `mongodb://localhost/workouts`,
+    process.env.MONGODB_URI || 'mongodb://localhost/workouts',
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -29,10 +32,6 @@ mongoose.connect(
       useFindAndModify: false
     }
   );
-
-db.on("error", error => {
-    console.log("database error: ", error)
-})
 
 // HTML Routes
 
@@ -50,16 +49,15 @@ app.get("/stats", (req, res) => {
 
 // API routes
 
-
-// Click "Dashboard"
-app.get("/api/workouts/range", (req, res) => {
+app.get("/api/workouts", (req, res) => {
     db.exercises.find({}, (err, result) => {
         if (err) throw err
         res.json(result)
     })
 })
 
-app.get("/exercise", (req, res) => {
+// Click "Dashboard"
+app.get("/api/workouts/range", (req, res) => {
     db.exercises.find({}, (err, result) => {
         if (err) throw err
         res.json(result)
@@ -81,6 +79,15 @@ app.get("/api/workouts/:id", (req, res) => {
     );
 });
 // Click "Add Exercise"
+// PUT /api/workouts/undefined
+// app.put("/api/workouts/:id", (req, res) => {
+//     const id = req.params.id
+//     console.log(id)
+// db.exercises.find({ _id: mongojs.ObjectId(id)}, (err, result) => {
+//     if (err) throw err 
+//     res.json(result)
+// })
+// })
 
 // POST /api/workouts 404 0.633 ms - 152T
 // This creates a workout ID 
@@ -112,6 +119,13 @@ app.post("/api/workouts", (req, res) => {
             }
         }
     );
+    // Right now this adds a blank exercise
+    // console.log(req.body)
+    // db.exercises.update(
+    //     req.body, (err, result) => {
+    //     if (err) throw err
+    //     console.log(result)
+    // })
 })
 
 
@@ -147,6 +161,17 @@ app.put("/api/workouts/:id", (req, res) => {
         })
 
 })
+
+
+// Click NewWorkout
+// GET /exercise
+
+// app.get("/exercise", (req, res) => {
+//     db.exercises.find({}, (err, result) => {
+//         if (err) throw err
+//         res.json(result)
+//     })
+// })
 
 // Express - listening on localhost
 app.listen(PORT, () => {

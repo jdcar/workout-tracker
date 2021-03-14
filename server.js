@@ -100,8 +100,10 @@ app.put("/api/workouts/:id", (req, res) => {
         },
         {
             $push: {
-                day: Date.now(),
-                exercises: [{
+                // day: Date.now,
+                exercises: 
+                // [
+                    {
                     type: req.body.type,
                     name: req.body.name,
                     duration: req.body.duration,
@@ -109,7 +111,8 @@ app.put("/api/workouts/:id", (req, res) => {
                     weight: req.body.weight,
                     reps: req.body.reps,
                     sets: req.body.sets,
-                }]
+                }
+            // ]
             }
         },
         (error, data) => {

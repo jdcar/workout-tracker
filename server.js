@@ -64,21 +64,21 @@ app.get("/api/workouts", (req, res) => {
 // })
 app.get("/api/workouts/range", (req, res) => {
     //get duration of all workout 
-    db.exercises.aggregate([
-        
+    Exercise.aggregate([
+
         {
             $addFields: {
-                "exercises.totalDuration": { $sum: "duration" },
+                totalDuration: { $sum: "$exercises.duration" },
             }
         },
     ])
-        // .then(results => {
-        //     console.log(results)
-        //     res.json(results)
-        // })
-        // .catch(err => {
-        //     res.json(err)
-        // })
+        .then(results => {
+            console.log(results)
+            res.json(results)
+        })
+        .catch(err => {
+            res.json(err)
+        })
 })
 
 
@@ -110,33 +110,43 @@ app.get("/api/workouts/:id", (req, res) => {
 
 // POST /api/workouts 404 0.633 ms - 152T
 // This creates a workout ID 
+
 app.post("/api/workouts", (req, res) => {
-    db.exercises.insertOne(
-        {
-            _id: mongojs.ObjectId(req.params.id),
-            day: Date.now()
-        },
-        {
-            $set: {
-                exercises: {
-                    type: req.body.type,
-                    name: req.body.name,
-                    duration: req.body.duration,
-                    distance: req.body.distance,
-                    weight: req.body.weight,
-                    reps: req.body.reps,
-                    sets: req.body.sets,
-                }
-            }
-        },
-        (error, data) => {
-            if (error) {
-                res.send(error);
-            } else {
-                res.send(data);
-            }
-        }
-    );
+
+    Exercise.create(req.body)
+        .then(dbWorkout => {
+            res.json(dbWorkout)
+        })
+        .catch(err => {
+            res.status(400).json(err);
+        });
+
+    // db.exercises.insertOne(
+    //     {
+    //         _id: mongojs.ObjectId(req.params.id),
+    //         day: Date.now()
+    //     },
+    //     {
+    //         $set: {
+    //             exercises: {
+    //                 type: req.body.type,
+    //                 name: req.body.name,
+    //                 duration: req.body.duration,
+    //                 distance: req.body.distance,
+    //                 weight: req.body.weight,
+    //                 reps: req.body.reps,
+    //                 sets: req.body.sets,
+    //             }
+    //         }
+    //     },
+    //     (error, data) => {
+    //         if (error) {
+    //             res.send(error);
+    //         } else {
+    //             res.send(data);
+    //         }
+    //     }
+    // );
     // Right now this adds a blank exercise
     // console.log(req.body)
     // db.exercises.update(
@@ -149,34 +159,58 @@ app.post("/api/workouts", (req, res) => {
 
 app.put("/api/workouts/:id", (req, res) => {
     // console.log(req.params.id)
-    db.exercises.updateOne(
+
+    Exercise.updateOne(
         {
             _id: mongojs.ObjectId(req.params.id)
         },
         {
-            $push: {
-                // day: Date.now,
-                exercises:
-                // [
-                {
-                    type: req.body.type,
-                    name: req.body.name,
-                    duration: req.body.duration,
-                    distance: req.body.distance,
-                    weight: req.body.weight,
-                    reps: req.body.reps,
-                    sets: req.body.sets,
-                }
-                // ]
-            }
-        },
-        (error, data) => {
-            if (error) {
-                res.send(error);
-            } else {
-                res.send(data);
+            exercises: {
+                type: req.body.type,
+                name: req.body.name,
+                duration: req.body.duration,
+                distance: req.body.distance,
+                weight: req.body.weight,
+                reps: req.body.reps,
+                sets: req.body.sets,
             }
         })
+        .then(dbWorkout => {
+            res.json(dbWorkout)
+        })
+        .catch(err => {
+            res.status(400).json(err);
+        });
+
+
+    // db.exercises.updateOne(
+    //     {
+    //         _id: mongojs.ObjectId(req.params.id)
+    //     },
+    //     {
+    //         $push: {
+    //             // day: Date.now,
+    //             exercises:
+    //             // [
+    //             {
+    //                 type: req.body.type,
+    //                 name: req.body.name,
+    //                 duration: req.body.duration,
+    //                 distance: req.body.distance,
+    //                 weight: req.body.weight,
+    //                 reps: req.body.reps,
+    //                 sets: req.body.sets,
+    //             }
+    //             // ]
+    //         }
+    //     },
+    //     (error, data) => {
+    //         if (error) {
+    //             res.send(error);
+    //         } else {
+    //             res.send(data);
+    //         }
+    //     })
 
 })
 

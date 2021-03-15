@@ -1,12 +1,12 @@
 const express = require("express");
 const mongojs = require("mongojs")
 const logger = require("morgan");
+let mongoose = require("mongoose");
 
 const path = require("path");
 const PORT = process.env.PORT || 3000;
 const app = express();
 const Exercise = require("./models/WorkoutModel");
-let mongoose = require("mongoose");
 
 app.use(logger("dev"));
 
@@ -55,7 +55,6 @@ app.get("/api/workouts", (req, res) => {
         res.json(result)
     })
 })
-
 // Click "Dashboard"
 app.get("/api/workouts/range", (req, res) => {
     db.exercises.find({}, (err, result) => {
@@ -63,7 +62,6 @@ app.get("/api/workouts/range", (req, res) => {
         res.json(result)
     })
 })
-
 app.get("/api/workouts/range", (req, res) => {
     //get duration of all workout 
     db.exercises.aggregate([
@@ -73,13 +71,16 @@ app.get("/api/workouts/range", (req, res) => {
             }
         },
     ])
-        .then(dbWorkouts => {
-            res.json(dbWorkouts)
-        })
-        .catch(err => {
-            res.json(err)
-        })
+        // .then(results => {
+        //     console.log(results)
+        //     res.json(results)
+        // })
+        // .catch(err => {
+        //     res.json(err)
+        // })
 })
+
+
 
 app.get("/api/workouts/:id", (req, res) => {
     db.exercises.findOne(

@@ -56,18 +56,19 @@ app.get("/api/workouts", (req, res) => {
     })
 })
 // Click "Dashboard"
-app.get("/api/workouts/range", (req, res) => {
-    db.exercises.find({}, (err, result) => {
-        if (err) throw err
-        res.json(result)
-    })
-})
+// app.get("/api/workouts/range", (req, res) => {
+//     db.exercises.find({}, (err, result) => {
+//         if (err) throw err
+//         res.json(result)
+//     })
+// })
 app.get("/api/workouts/range", (req, res) => {
     //get duration of all workout 
     db.exercises.aggregate([
+        
         {
             $addFields: {
-                totalDuration: { $sum: "$exercises.duration" },
+                "exercises.totalDuration": { $sum: "duration" },
             }
         },
     ])

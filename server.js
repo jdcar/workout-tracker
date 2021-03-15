@@ -50,7 +50,7 @@ app.get("/stats", (req, res) => {
 // API routes
 
 app.get("/api/workouts", (req, res) => {
-    db.exercises.find({}, (err, result) => {
+    Exercise.find({}, (err, result) => {
         if (err) throw err
         res.json(result)
     })
@@ -69,6 +69,7 @@ app.get("/api/workouts/range", (req, res) => {
         {
             $addFields: {
                 totalDuration: { $sum: "$exercises.duration" },
+                totalDistance: { $sum: "$exercises.distance" },
             }
         },
     ])
@@ -84,18 +85,26 @@ app.get("/api/workouts/range", (req, res) => {
 
 
 app.get("/api/workouts/:id", (req, res) => {
-    db.exercises.findOne(
-        {
-            _id: mongojs.ObjectId(req.params.id)
-        },
-        (error, data) => {
-            if (error) {
-                res.send(error);
-            } else {
-                res.send(data);
-            }
+
+    Exercise.findById({ _id: mongojs.ObjectId(req.params.id) }, function (err, data) {
+        if (error) {
+            res.send(error);
+        } else {
+            res.send(data);
         }
-    );
+    })
+    // db.exercises.findOne(
+    //     {
+    //         _id: mongojs.ObjectId(req.params.id)
+    //     },
+    //     (error, data) => {
+    //         if (error) {
+    //             res.send(error);
+    //         } else {
+    //             res.send(data);
+    //         }
+    //     }
+    // );
 });
 // Click "Add Exercise"
 // PUT /api/workouts/undefined
@@ -165,14 +174,20 @@ app.put("/api/workouts/:id", (req, res) => {
             _id: mongojs.ObjectId(req.params.id)
         },
         {
-            exercises: {
-                type: req.body.type,
-                name: req.body.name,
-                duration: req.body.duration,
-                distance: req.body.distance,
-                weight: req.body.weight,
-                reps: req.body.reps,
-                sets: req.body.sets,
+            $push: {
+                // day: Date.now,
+                exercises:
+                // [
+                {
+                    type: req.body.type,
+                    name: req.body.name,
+                    duration: req.body.duration,
+                    distance: req.body.distance,
+                    weight: req.body.weight,
+                    reps: req.body.reps,
+                    sets: req.body.sets,
+                }
+                // ]
             }
         })
         .then(dbWorkout => {

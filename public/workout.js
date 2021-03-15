@@ -6,15 +6,30 @@ async function initWorkout() {
       .querySelector("a[href='/exercise?']")
       .setAttribute("href", `/exercise?id=${lastWorkout._id}`);
 
+    //     const workoutSummary = {
+    //       date: formatDate(lastWorkout.day),
+    //       // totalDuration: lastWorkout.exercises[0].duration,
+    //       totalDuration: lastWorkout.totalDuration,
+    //       numExercises: lastWorkout.exercises.length,
+
+    //       ...tallyExercises(lastWorkout.exercises)
+    //     };
+
+    //     renderWorkoutSummary(workoutSummary);
+    //   } else {
+    //     renderNoWorkoutText()
+    //   }
+    // }
+
     const workoutSummary = {
       date: formatDate(lastWorkout.day),
-      // totalDuration: lastWorkout.exercises[0].duration,
       totalDuration: lastWorkout.totalDuration,
+      totalDistance: lastWorkout.exercises.reduce((acc, ex) => acc + ex.distance,
+        0
+      ),
       numExercises: lastWorkout.exercises.length,
-      
       ...tallyExercises(lastWorkout.exercises)
     };
-
     renderWorkoutSummary(workoutSummary);
   } else {
     renderNoWorkoutText()

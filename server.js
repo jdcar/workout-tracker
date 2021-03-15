@@ -26,12 +26,12 @@ db.on("error", error => {
 mongoose.connect(
     process.env.MONGODB_URI || 'mongodb://localhost/workouts',
     {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-      useFindAndModify: false
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false
     }
-  );
+);
 
 // HTML Routes
 
@@ -62,6 +62,23 @@ app.get("/api/workouts/range", (req, res) => {
         if (err) throw err
         res.json(result)
     })
+})
+
+app.get("/api/workouts/range", (req, res) => {
+    //get duration of all workout 
+    db.exercises.aggregate([
+        {
+            $addFields: {
+                totalDuration: { $sum: "$exercises.duration" },
+            }
+        },
+    ])
+        .then(dbWorkouts => {
+            res.json(dbWorkouts)
+        })
+        .catch(err => {
+            res.json(err)
+        })
 })
 
 app.get("/api/workouts/:id", (req, res) => {
@@ -95,11 +112,10 @@ app.post("/api/workouts", (req, res) => {
     db.exercises.insertOne(
         {
             _id: mongojs.ObjectId(req.params.id),
-            
+            day: Date.now()
         },
         {
             $set: {
-                day: Date.now,
                 exercises: {
                     type: req.body.type,
                     name: req.body.name,
